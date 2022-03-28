@@ -9,10 +9,7 @@ import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.coroutines.internal.synchronized
 import kotlinx.coroutines.launch
 
 class  MainActivity : AppCompatActivity() {
@@ -32,25 +29,22 @@ class  MainActivity : AppCompatActivity() {
     }
 
     fun buttonClicked(view: View){
-        runnable()
+        var textView2 = findViewById<TextView>(R.id.textView2)
+        textView2.text = "Thread is running";
+        runnable(textView2)
     }
 
-    fun runnable() {
-
-        @OptIn(InternalCoroutinesApi::class)
-
+    fun runnable(textView2: TextView) {
             GlobalScope.launch {
-                synchronized(this) {
                     try {
                         Thread.sleep(5000)
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
-                }
                 Handler(Looper.getMainLooper()).postAtTime({
                     Toast.makeText(this@MainActivity, "Download finished", Toast.LENGTH_SHORT).show();
+                    textView2.text = "Press Button to Start"
                 },1000)
-                Log.i(TAG, "run: Download finished")
             }
         }
     }
